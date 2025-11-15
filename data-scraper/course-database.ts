@@ -19,18 +19,18 @@ for (let i = 0; i < data.length; i++) {
   console.log(data[i]);
 
   let classCode = data[i].Class;
-  if (!reviews[classCode])
+  if (classCode && reviews[classCode] == null)
     reviews[classCode] = {
       difficulty: data[i]["Average Difficulty"],
       comments: [],
     };
 
-  if (data[i].Class === "") {
-    // find the previous course with a set class code and assign it to this one
-    for (let j = i; j >= 0; j--) {
-      if (data[j].Class !== "") {
-        data[i].Class = data[j].Class;
-        classCode = data[j].Class;
+  if (classCode) {
+    for (let y = i; y < data.length; y++) {
+      if (data[y].Class === "") {
+        reviews[classCode].comments.push(data[y]["Additional Comments"]);
+      } else {
+        break;
       }
     }
   }
