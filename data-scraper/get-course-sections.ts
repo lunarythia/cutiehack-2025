@@ -1,4 +1,4 @@
-import { CourseMetadata, fetchCourseSections } from "./requests.ts";
+import { CourseMetadata, fetchCourseSections, resetForm } from "./requests.ts";
 
 const allCourses = Deno.readTextFileSync("courses.jsonl")
   .split(/\r?\n/g)
@@ -11,6 +11,7 @@ const outfile = Deno.openSync("courses-extended.jsonl", {
 });
 
 for (const course of allCourses) {
+  await resetForm();
   const sections = await fetchCourseSections(
     course.subjectCode + course.courseNumber
   );

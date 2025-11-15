@@ -1,3 +1,4 @@
-import { fetchCourseSections } from "./requests.ts";
+import { fetchCourseSections, resetForm } from "./requests.ts";
 
-console.log(await fetchCourseSections("CS010C"));
+await resetForm();
+console.log(await fetchCourseSections("MATH010A"));

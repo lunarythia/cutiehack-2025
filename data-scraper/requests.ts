@@ -160,7 +160,7 @@ export const fetchCourses = async (offset: number) => {
 // accepts course code in format SUBJ0000
 export const fetchCourseSections = async (courseCode: string) => {
   const res = await fetch(
-    `https://registrationssb.ucr.edu/StudentRegistrationSsb/ssb/searchResults/searchResults?txt_subjectcoursecombo=${courseCode}&txt_term=202610&startDatepicker=&endDatepicker=&uniqueSessionId=jjjzu1763223617707&pageOffset=0&pageMaxSize=10&sortColumn=subjectDescription&sortDirection=asc`,
+    `https://registrationssb.ucr.edu/StudentRegistrationSsb/ssb/searchResults/searchResults?txt_subjectcoursecombo=${courseCode}&txt_term=202610&startDatepicker=&endDatepicker=&uniqueSessionId=${crypto.randomUUID()}&pageOffset=0&pageMaxSize=10&sortColumn=subjectDescription&sortDirection=asc`,
     {
       credentials: "include",
       headers: {
@@ -175,7 +175,9 @@ export const fetchCourseSections = async (courseCode: string) => {
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-origin",
         Priority: "u=0",
+        cookie,
       },
+
       referrer:
         "https://registrationssb.ucr.edu/StudentRegistrationSsb/ssb/classSearch/classSearch",
       method: "GET",
@@ -184,4 +186,31 @@ export const fetchCourseSections = async (courseCode: string) => {
   );
 
   return res.json() as Promise<{ data: CourseMetadata[] }>;
+};
+
+export const resetForm = () => {
+  return fetch(
+    "https://registrationssb.ucr.edu/StudentRegistrationSsb/ssb/classSearch/resetDataForm",
+    {
+      credentials: "include",
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:142.0) Gecko/20100101 Firefox/142.0",
+        Accept: "*/*",
+        "Accept-Language": "en-US,en;q=0.5",
+        "X-Synchronizer-Token": "8eb03f9d-dce4-4d8f-a880-81b8e5bf2d9b",
+        "X-Requested-With": "XMLHttpRequest",
+        "Sec-GPC": "1",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
+        Priority: "u=0",
+        cookie,
+      },
+      referrer:
+        "https://registrationssb.ucr.edu/StudentRegistrationSsb/ssb/classSearch/classSearch",
+      method: "POST",
+      mode: "cors",
+    }
+  );
 };
