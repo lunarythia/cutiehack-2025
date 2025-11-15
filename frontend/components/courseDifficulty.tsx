@@ -37,12 +37,15 @@ export const CourseDifficultyComments = ({
   if (!foundEntry) return <span />;
 
   return (
-    <div style={{margin: '10px'}}>
-      <BackButton/>
+    // <div style={{margin: '10px'}} >
+    <div className="p-4 md:p-8 bg-white shadow-lg rounded-lg max-w-7xl mx-auto font-sans">
       <div className="flex flex-col items-center justify-center">
-        <h1 className="text-3xl">
-          Reviews for {courseCode}
-        </h1>
+        <div className="relative w-full">
+          <div className="absolute left-0 top-1/2 -translate-y-1/2">
+            <BackButton />
+          </div>
+          <h1 className="text-3xl text-center">Reviews for {courseCode}</h1>
+        </div>
         <div style={{margin: '7px'}}>
           <CourseDifficulty courseCode = {courseCode}>
           </CourseDifficulty>

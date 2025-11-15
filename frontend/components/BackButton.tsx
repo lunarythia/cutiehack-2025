@@ -9,7 +9,7 @@ const BackButton = () => {
   return (
     <button
       onClick={() => router.push("/plan")} // target route
-      className="fixed top-4 left-4 bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition"
+      className="sticky bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition"
     >
       ← Back
     </button>
