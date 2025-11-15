@@ -44,7 +44,8 @@ export interface CourseMetadata {
   anySections: null;
 }
 
-interface ExtendedCourse {
+export interface ExtendedCourse {
+  prerequisites: string;
   id: number;
   term: string;
   termDesc: string;
@@ -157,6 +158,39 @@ export const fetchCourses = async (offset: number) => {
   }>;
 };
 
+export const fetchPrerequisites = async (
+  subject: string,
+  courseNumber: string
+) => {
+  const res = await fetch(
+    "https://registrationssb.ucr.edu/StudentRegistrationSsb/ssb/courseSearchResults/getPrerequisites",
+    {
+      credentials: "include",
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:142.0) Gecko/20100101 Firefox/142.0",
+        Accept: "text/html, */*; q=0.01",
+        "Accept-Language": "en-US,en;q=0.5",
+        "X-Synchronizer-Token": "438b2bee-8c27-4ab2-94f1-432e3bca2f0a",
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "X-Requested-With": "XMLHttpRequest",
+        "Sec-GPC": "1",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
+        Priority: "u=0",
+      },
+      referrer:
+        "https://registrationssb.ucr.edu/StudentRegistrationSsb/ssb/courseSearch/courseSearch",
+      body: `term=202610&subjectCode=${subject}&courseNumber=${courseNumber}`,
+      method: "POST",
+      mode: "cors",
+    }
+  );
+
+  return res.text();
+};
+
 // accepts course code in format SUBJ0000
 export const fetchCourseSections = async (courseCode: string) => {
   const res = await fetch(
@@ -185,7 +219,7 @@ export const fetchCourseSections = async (courseCode: string) => {
     }
   );
 
-  return res.json() as Promise<{ data: CourseMetadata[] }>;
+  return res.json() as Promise<{ data: ExtendedCourse[] }>;
 };
 
 export const resetForm = () => {

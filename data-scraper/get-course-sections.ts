@@ -16,7 +16,6 @@ for (const course of allCourses) {
     course.subjectCode + course.courseNumber
   );
 
-  //   console.log(sections);
   if (!sections.data?.length) continue;
 
   console.log(
