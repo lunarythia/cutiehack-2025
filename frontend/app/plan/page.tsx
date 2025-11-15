@@ -1,5 +1,10 @@
 // AcademicPlan.jsx
+import type { Metadata } from "next";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "Four-year plan",
+};
 
 /**
  * Data for the academic plan, transcribed from the image.
