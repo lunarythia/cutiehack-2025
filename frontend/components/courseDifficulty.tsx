@@ -46,14 +46,18 @@ export const CourseDifficultyComments = ({
           </div>
           <h1 className="text-3xl text-center">Reviews for {courseCode}</h1>
         </div>
-        <div style={{margin: '7px'}}>
-          <CourseDifficulty courseCode = {courseCode}>
-          </CourseDifficulty>
+        <div style={{ margin: "7px" }}>
+          <CourseDifficulty courseCode={courseCode}></CourseDifficulty>
         </div>
       </div>
       <div className="grid gap-4">
         {foundEntry.comments.map((comment) => (
-          <p key={comment} className="p-2 md:p-4 shadow-lg rounded-lg max-w-7xl mx-auto">{comment}</p>
+          <p
+            key={comment}
+            className="p-2 md:p-4 shadow-lg rounded-lg max-w-7xl mx-auto"
+          >
+            {comment}
+          </p>
         ))}
       </div>
     </div>

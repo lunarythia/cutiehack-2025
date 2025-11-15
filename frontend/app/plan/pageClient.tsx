@@ -7,6 +7,7 @@ import { ConfirmationCloseButton } from "@/components/ConfirmationCloseButton";
 import { data } from "./pageScript";
 import type { Year, QuarterPlan, Course } from "@/app/types/plan.ts";
 import { CourseDifficulty } from "@/components/courseDifficulty";
+import { CourseSchedule } from "@/components/courseSchedule";
 
 /*export const metadata: Metadata = {
   title: "Four-year plan",
@@ -27,6 +28,7 @@ const CourseCell = ({ code, name, notes }: Course) => {
       {name && <div className="text-sm">{name}</div>}
       {notes && <div className="text-xs italic text-gray-600">{notes}</div>}
       {code && <CourseDifficulty courseCode={code} />}
+      {code && <CourseSchedule courseCode={code} />}
     </td>
   );
 };
@@ -54,65 +56,65 @@ type Props = {
  */
 const AcademicPlan = ({ data }: Props) => {
   return (
-      <table className="w-full border-collapse border border-gray-300">
-        {/* Table Header */}
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border border-gray-300 p-2 font-bold underline">
-              Fall Quarter
-            </th>
-            <th className="border border-gray-300 p-2 font-bold underline w-16">
-              Units
-            </th>
-            <th className="border border-gray-300 p-2 font-bold underline">
-              Winter Quarter
-            </th>
-            <th className="border border-gray-300 p-2 font-bold underline w-16">
-              Units
-            </th>
-            <th className="border border-gray-300 p-2 font-bold underline">
-              Spring Quarter
-            </th>
-            <th className="border border-gray-300 p-2 font-bold underline w-16">
-              Units
-            </th>
-          </tr>
-        </thead>
+    <table className="w-full border-collapse border border-gray-300">
+      {/* Table Header */}
+      <thead>
+        <tr className="bg-gray-100">
+          <th className="border border-gray-300 p-2 font-bold underline">
+            Fall Quarter
+          </th>
+          <th className="border border-gray-300 p-2 font-bold underline w-16">
+            Units
+          </th>
+          <th className="border border-gray-300 p-2 font-bold underline">
+            Winter Quarter
+          </th>
+          <th className="border border-gray-300 p-2 font-bold underline w-16">
+            Units
+          </th>
+          <th className="border border-gray-300 p-2 font-bold underline">
+            Spring Quarter
+          </th>
+          <th className="border border-gray-300 p-2 font-bold underline w-16">
+            Units
+          </th>
+        </tr>
+      </thead>
 
-        {/* Table Body, mapping over the data */}
-        <tbody>
-          {data.map((yearData) => (
-            // Use React.Fragment to group elements for each year
-            <React.Fragment key={yearData.year}>
-              {/* Year Header Row */}
-              <tr className="bg-gray-200">
-                <td
-                  className="text-center font-bold p-2 border border-gray-300"
-                  colSpan={6}
-                >
-                  {yearData.year}
-                </td>
+      {/* Table Body, mapping over the data */}
+      <tbody>
+        {data.map((yearData) => (
+          // Use React.Fragment to group elements for each year
+          <React.Fragment key={yearData.year}>
+            {/* Year Header Row */}
+            <tr className="bg-gray-200">
+              <td
+                className="text-center font-bold p-2 border border-gray-300"
+                colSpan={6}
+              >
+                {yearData.year}
+              </td>
+            </tr>
+
+            {/* Course Rows for the year */}
+            {Array.from({
+              length: Math.max(
+                ...yearData.quarters.map((cour) => cour.courses.length)
+              ),
+            }).map((_, rowIndex) => (
+              <tr key={rowIndex} className="even:bg-gray-50">
+                {yearData.quarters.map((thing, colIndex) => (
+                  <React.Fragment key={colIndex}>
+                    <CourseCell {...thing.courses[rowIndex]} />
+                    <UnitCell units={thing.courses[rowIndex]?.units} />
+                  </React.Fragment>
+                ))}
               </tr>
-
-              {/* Course Rows for the year */}
-              {Array.from({
-                length: Math.max(
-                  ...yearData.quarters.map((cour) => cour.courses.length)
-                ),
-              }).map((_, rowIndex) => (
-                <tr key={rowIndex} className="even:bg-gray-50">
-                  {yearData.quarters.map((thing, colIndex) => (
-                    <React.Fragment key={colIndex}>
-                      <CourseCell {...thing.courses[rowIndex]} />
-                      <UnitCell units={thing.courses[rowIndex]?.units} />
-                    </React.Fragment>
-                  ))}
-                </tr>
-              ))}
-            </React.Fragment>
-          ))}
-        </tbody>
-      </table>
+            ))}
+          </React.Fragment>
+        ))}
+      </tbody>
+    </table>
   );
 };
 
