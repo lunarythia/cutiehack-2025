@@ -146,15 +146,10 @@ export const CourseSchedule = ({ courseCode }: { courseCode: string }) => {
   }
 
   return (
-    <Accordion
-      type="single"
-      collapsible
-      className="w-full"
-      defaultValue="item-1"
-    >
+    <Accordion type="single" collapsible className="w-full">
       <AccordionItem value="item-1">
         <AccordionTrigger>
-          <CourseCounts course={courseData} />
+          Course sections <CourseCounts course={courseData} />
         </AccordionTrigger>
         <AccordionContent>
           <div className="grid gap-2">
@@ -230,7 +225,33 @@ export const CourseSchedule = ({ courseCode }: { courseCode: string }) => {
   );
 };
 
-const CourseCounts = ({ course }: { course: CourseMetadata }) => {};
+const CourseCounts = ({ course }: { course: CourseMetadata }) => {
+  const numLectures = course.sections.filter(
+    (x) => x.meetingsFaculty[0].meetingTime.meetingType === "LEC"
+  ).length;
+  const numDiscussion = course.sections.filter(
+    (x) => x.meetingsFaculty[0].meetingTime.meetingType === "DIS"
+  ).length;
+  const numLabs = course.sections.filter(
+    (x) => x.meetingsFaculty[0].meetingTime.meetingType === "LAB"
+  ).length;
+
+  return (
+    <div className="ml-auto flex flex-row gap-1 items-center text-xs">
+      {numLectures !== 0 && (
+        <div className="bg-blue-400/50 p-1 rounded-md">{numLectures} LEC</div>
+      )}
+      {numDiscussion !== 0 && (
+        <div className="bg-pink-400/50 p-1 rounded-md">
+          {numDiscussion} DISC
+        </div>
+      )}
+      {numLabs !== 0 && (
+        <div className="bg-green-400/50 p-1 rounded-md">{numLabs} LAB</div>
+      )}
+    </div>
+  );
+};
 
 const CourseTime = ({
   startTime,
