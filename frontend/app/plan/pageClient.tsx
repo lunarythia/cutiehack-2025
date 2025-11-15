@@ -52,7 +52,6 @@ type Props = {
  */
 const AcademicPlan = ({ data }: Props) => {
   return (
-    <div className="p-4 md:p-8 bg-white shadow-lg rounded-lg max-w-7xl mx-auto font-sans">
       <table className="w-full border-collapse border border-gray-300">
         {/* Table Header */}
         <thead>
@@ -112,7 +111,6 @@ const AcademicPlan = ({ data }: Props) => {
           ))}
         </tbody>
       </table>
-    </div>
   );
 };
 
@@ -140,22 +138,24 @@ const Page = () => {
     }
   };
   return (
-    <div>
-      <div className="mb-4 flex gap-2">
-        <button
-          onClick={handleSave}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Save Plan
-        </button>
-        <button
-          onClick={handleLoad}
-          className="px-4 py-2 bg-green-500 text-white rounded"
-        >
-          Load Plan
-        </button>
+    <div className="p-4 md:p-8 bg-white shadow-lg rounded-lg max-w-7xl mx-auto font-sans">
+      <div>
+        <div className="mb-4 flex gap-2">
+          <button
+            onClick={handleSave}
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Save Plan
+          </button>
+          <button
+            onClick={handleLoad}
+            className="px-4 py-2 bg-green-500 text-white rounded"
+          >
+            Load Plan
+          </button>
+        </div>
+        <AcademicPlan data={plan}></AcademicPlan>
       </div>
-      <AcademicPlan data={plan}></AcademicPlan>
     </div>
   );
 };
