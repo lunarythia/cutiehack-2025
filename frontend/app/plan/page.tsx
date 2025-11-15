@@ -358,7 +358,7 @@ const AcademicPlan = () => {
             <React.Fragment key={yearData.year}>
               {/* Year Header Row */}
               <tr className="bg-gray-200">
-                <td className="text-center font-bold p-2 border border-gray-300">
+                <td className="text-center font-bold p-2 border border-gray-300" colSpan={6}>
                   {yearData.year}
                 </td>
               </tr>
