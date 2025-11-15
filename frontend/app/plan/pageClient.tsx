@@ -2,7 +2,7 @@
 // AcademicPlan.jsx
 import type { Metadata } from "next";
 import React, { useState } from "react";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { ConfirmationCloseButton } from "@/components/ConfirmationCloseButton";
 import { data } from "./pageScript";
 import type { Year, QuarterPlan, Course } from "@/app/types/plan.ts";
@@ -121,8 +121,11 @@ const AcademicPlan = ({ data }: Props) => {
 const Page = () => {
   const [plan, setPlan] = useState<Year[]>(() => {
     try {
-      const saved = typeof window !== "undefined" ? localStorage.getItem(LOCAL_STORAGE_KEY) : null;
-      return saved ? JSON.parse(saved) as Year[] : data;  
+      const saved =
+        typeof window !== "undefined"
+          ? localStorage.getItem(LOCAL_STORAGE_KEY)
+          : null;
+      return saved ? (JSON.parse(saved) as Year[]) : data;
     } catch {
       return data;
     }
@@ -160,8 +163,8 @@ const Page = () => {
             break;
           default:
             break;
-          }
         }
+      },
     });
   };
   return (

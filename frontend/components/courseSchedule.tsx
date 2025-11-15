@@ -1,4 +1,10 @@
 import courses from "@/data/courses.json";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export interface CourseMetadata {
   id: number;
@@ -140,55 +146,91 @@ export const CourseSchedule = ({ courseCode }: { courseCode: string }) => {
   }
 
   return (
-    <div className="grid gap-2">
-      {/* days of the week */}
-      {courseData.sections?.length &&
-        courseData.sections.map((section) =>
-          section.meetingsFaculty.map((meeting) => (
-            <div
-              className="grid gap-1 border-l-2 border-l-blue-500 pl-3"
-              key={meeting.courseReferenceNumber}
-            >
-              {/* meeting days */}
-              <div className="flex flex-row py-2">
-                {[
-                  [meeting.meetingTime.monday, "M"],
-                  [meeting.meetingTime.tuesday, "T"],
-                  [meeting.meetingTime.wednesday, "W"],
-                  [meeting.meetingTime.thursday, "R"],
-                  [meeting.meetingTime.friday, "F"],
-                ].map(([isMeeting, letter]) => (
+    <Accordion
+      type="single"
+      collapsible
+      className="w-full"
+      defaultValue="item-1"
+    >
+      <AccordionItem value="item-1">
+        <AccordionTrigger>
+          <CourseCounts course={courseData} />
+        </AccordionTrigger>
+        <AccordionContent>
+          <div className="grid gap-2">
+            {/* days of the week */}
+            {courseData.sections?.length &&
+              courseData.sections.map((section) =>
+                section.meetingsFaculty.map((meeting) => (
                   <div
-                    className={`w-5 h-5 text-center flex items-center justify-center border border-blue-900 ${
-                      isMeeting
-                        ? "bg-blue-900 text-white"
-                        : "bg-white text-blue-900"
-                    }`}
-                    key={letter as string}
+                    className={[
+                      "grid gap-1 border-l-2 pl-3",
+                      meeting.meetingTime.meetingType == "LEC" &&
+                        "border-l-blue-500",
+                      meeting.meetingTime.meetingType == "LAB" &&
+                        "border-l-green-500",
+                      meeting.meetingTime.meetingType == "DIS" &&
+                        "border-l-pink-500",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    key={meeting.courseReferenceNumber}
                   >
-                    {letter}
+                    {/* meeting days */}
+                    <div className="flex flex-row py-2">
+                      {[
+                        [meeting.meetingTime.monday, "M"],
+                        [meeting.meetingTime.tuesday, "T"],
+                        [meeting.meetingTime.wednesday, "W"],
+                        [meeting.meetingTime.thursday, "R"],
+                        [meeting.meetingTime.friday, "F"],
+                      ].map(([isMeeting, letter]) => (
+                        <div
+                          className={[
+                            "w-5 h-5 text-center flex items-center justify-center border border-blue-900",
+
+                            meeting.meetingTime.meetingType == "LEC" &&
+                              "border-blue-600",
+                            meeting.meetingTime.meetingType == "LAB" &&
+                              "border-green-600",
+                            meeting.meetingTime.meetingType == "DIS" &&
+                              "border-pink-600",
+                            isMeeting
+                              ? "bg-black text-white"
+                              : "bg-white text-black",
+                          ]
+                            .filter(Boolean)
+                            .join(" ")}
+                          key={letter as string}
+                        >
+                          {letter}
+                        </div>
+                      ))}
+
+                      <div className="ml-2">
+                        <CourseTime
+                          startTime={meeting.meetingTime.beginTime}
+                          endTime={meeting.meetingTime.endTime}
+                        />
+                      </div>
+                    </div>
+
+                    {/* time & instructor */}
+
+                    {section.faculty[0] && (
+                      <div>{section.faculty[0].displayName}</div>
+                    )}
                   </div>
-                ))}
-
-                <div className="ml-2">
-                  <CourseTime
-                    startTime={meeting.meetingTime.beginTime}
-                    endTime={meeting.meetingTime.endTime}
-                  />
-                </div>
-              </div>
-
-              {/* time & instructor */}
-
-              {section.faculty[0] && (
-                <div>{section.faculty[0].displayName}</div>
+                ))
               )}
-            </div>
-          ))
-        )}
-    </div>
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 };
+
+const CourseCounts = ({ course }: { course: CourseMetadata }) => {};
 
 const CourseTime = ({
   startTime,
