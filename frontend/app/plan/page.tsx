@@ -1,7 +1,12 @@
 // AcademicPlan.jsx
+import type { Metadata } from "next";
 import React from "react";
 import {data} from "./pageScript";
 import type { Year, QuarterPlan, Course } from "@/app/types/plan.ts";
+
+export const metadata: Metadata = {
+  title: "Four-year plan",
+};
 
 /**
  * Data for the academic plan, transcribed from the image.
