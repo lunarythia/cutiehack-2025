@@ -1,4 +1,4 @@
-"use server";
+"use client";
 import difficultyDatabase from "@/data/difficulty-database-fixed.json";
 
 export type DifficultyEntries = Record<
@@ -10,11 +10,7 @@ export type DifficultyEntries = Record<
 >;
 
 // returns the difficulty out of 10 as a link to the course's reviews, or empty if there are no reviews
-export const CourseDifficulty = async ({
-  courseCode,
-}: {
-  courseCode: string;
-}) => {
+export const CourseDifficulty = ({ courseCode }: { courseCode: string }) => {
   const fixedCode = courseCode.replaceAll(" ", "");
   const foundEntry = (difficultyDatabase as DifficultyEntries)[fixedCode];
 
@@ -29,7 +25,7 @@ export const CourseDifficulty = async ({
   );
 };
 
-export const CourseDifficultyComments = async ({
+export const CourseDifficultyComments = ({
   courseCode,
 }: {
   courseCode: string;
