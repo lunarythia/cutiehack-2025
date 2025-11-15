@@ -1,8 +1,9 @@
 "use client";
 // AcademicPlan.jsx
 import type { Metadata } from "next";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { toast } from 'react-toastify';
+import { ConfirmationCloseButton } from "@/components/ConfirmationCloseButton";
 import { data } from "./pageScript";
 import type { Year, QuarterPlan, Course } from "@/app/types/plan.ts";
 import { CourseDifficulty } from "@/components/courseDifficulty";
@@ -116,13 +117,14 @@ const AcademicPlan = ({ data }: Props) => {
 };
 
 const Page = () => {
-  const [plan, setPlan] = useState<Year[]>(data);
-
-  // Load from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (saved) setPlan(JSON.parse(saved));
-  }, []);
+  const [plan, setPlan] = useState<Year[]>(() => {
+    try {
+      const saved = typeof window !== "undefined" ? localStorage.getItem(LOCAL_STORAGE_KEY) : null;
+      return saved ? JSON.parse(saved) as Year[] : data;  
+    } catch {
+      return data;
+    }
+  });
 
   const handleSave = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(plan));
@@ -137,6 +139,28 @@ const Page = () => {
     } else {
       toast.error("No saved plan found.");
     }
+  };
+
+  const handleReset = () => {
+    toast.info("Are you sure you want to reset plan?", {
+      closeButton: ConfirmationCloseButton,
+      onClose: (response) => {
+        switch (response) {
+          case true:
+            const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (saved) {
+              localStorage.removeItem(LOCAL_STORAGE_KEY);
+              setPlan(data);
+              toast.success("Plan reset!");
+            } else {
+              toast.error("No saved plan to reset.");
+            }
+            break;
+          default:
+            break;
+          }
+        }
+    });
   };
   return (
     <div className="p-4 md:p-8 bg-white shadow-lg rounded-lg max-w-7xl mx-auto font-sans">
@@ -153,6 +177,12 @@ const Page = () => {
             className="px-4 py-2 bg-green-500 text-white rounded"
           >
             Load Plan
+          </button>
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 bg-red-500 text-white rounded"
+          >
+            Reset Plan
           </button>
         </div>
         <AcademicPlan data={plan}></AcademicPlan>
