@@ -36,10 +36,15 @@ export const CourseDifficultyComments = ({
   if (!foundEntry) return <span />;
 
   return (
-    <div className="grid gap-4">
-      {foundEntry.comments.map((comment) => (
-        <p key={comment}>{comment}</p>
-      ))}
+    <div style={{margin: '10px'}}>
+      <h1 className="text-3xl">
+        REVIEWS FOR CLASS {courseCode}
+      </h1>
+      <div className="grid gap-4">
+        {foundEntry.comments.map((comment) => (
+          <p key={comment}>{comment}</p>
+        ))}
+      </div>
     </div>
   );
 };
