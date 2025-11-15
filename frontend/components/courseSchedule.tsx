@@ -146,9 +146,13 @@ export const CourseSchedule = ({ courseCode }: { courseCode: string }) => {
   }
 
   return (
-    <Accordion type="single" collapsible className="w-full">
+    <Accordion
+      type="single"
+      collapsible
+      className="w-full bg-zinc-500/15 mt-2 py-2 px-2 rounded-md"
+    >
       <AccordionItem value="item-1">
-        <AccordionTrigger>
+        <AccordionTrigger className="-py-1 font-semibold cursor-pointer">
           Course sections <CourseCounts course={courseData} />
         </AccordionTrigger>
         <AccordionContent>
