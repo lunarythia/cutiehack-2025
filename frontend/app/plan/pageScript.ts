@@ -133,3 +133,4 @@ export const data: Year[] = [
     ]
   }
 ];
+//Save to local storage
