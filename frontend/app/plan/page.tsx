@@ -94,12 +94,14 @@ const AcademicPlan = () => {
               </tr>
 
               {/* Course Rows for the year */}
-              {Array.from({length: 4}).map((_, rowIndex) => (
+              {Array.from({length: Math.max(...yearData.quarters.map(cour => cour.courses.length))}).map((_, rowIndex) => (
                 <tr key={rowIndex} className="even:bg-gray-50">
                   {yearData.quarters.map((thing, colIndex)=>(
-                    <><CourseCell {...thing.courses[rowIndex]} />
-                    <UnitCell units={thing.courses[rowIndex]?.units} />
-                  </>))}
+                    <React.Fragment key={colIndex}>
+                      <CourseCell {...thing.courses[rowIndex]} />
+                      <UnitCell units={thing.courses[rowIndex]?.units} />
+                    </React.Fragment>
+                  ))}
                 </tr>
               ))}
             </React.Fragment>

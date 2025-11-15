@@ -18,7 +18,8 @@ export const data: Year[] = [
           { code: "CS 010B", name: "C++ Programming II", units: 4 },
           { code: "ENGL 001B", name: "Intermediate Composition", units: 4 },
           { code: "MATH 009B", name: "First Year Calculus", units: 4 },
-          { code: "MATH/CS 011", name: "Intro to Discrete Structures", units: 4 }
+          { code: "MATH/CS 011", name: "Intro to Discrete Structures", units: 4 },
+          {code: "AHS007", name: "World Art Images", units: 3}
         ]
       },
       {
