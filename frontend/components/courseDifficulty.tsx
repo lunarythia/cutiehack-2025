@@ -11,7 +11,13 @@ export type DifficultyEntries = Record<
 >;
 
 // returns the difficulty out of 10 as a link to the course's reviews, or empty if there are no reviews
-export const CourseDifficulty = ({ courseCode }: { courseCode: string }) => {
+export const CourseDifficulty = ({
+  courseCode,
+  noLink,
+}: {
+  courseCode: string;
+  noLink?: boolean;
+}) => {
   const fixedCode = courseCode.replaceAll(" ", "");
   const foundEntry = (difficultyDatabase as DifficultyEntries)[fixedCode];
 
@@ -19,9 +25,13 @@ export const CourseDifficulty = ({ courseCode }: { courseCode: string }) => {
 
   return (
     <div className="grid gap-1">
-      <a className="text-blue-500" href={`/reviews/${fixedCode}`}>
-        Difficulty: {foundEntry.difficulty} / 10.0
-      </a>
+      {noLink ? (
+        `Difficulty: ${foundEntry.difficulty} / 10.0`
+      ) : (
+        <a className="text-blue-500" href={`/reviews/${fixedCode}`}>
+          Difficulty: {foundEntry.difficulty} / 10.0
+        </a>
+      )}
     </div>
   );
 };
@@ -47,7 +57,7 @@ export const CourseDifficultyComments = ({
           <h1 className="text-3xl text-center">Reviews for {courseCode}</h1>
         </div>
         <div style={{ margin: "7px" }}>
-          <CourseDifficulty courseCode={courseCode}></CourseDifficulty>
+          <CourseDifficulty noLink courseCode={courseCode}></CourseDifficulty>
         </div>
       </div>
       <div className="grid gap-4">

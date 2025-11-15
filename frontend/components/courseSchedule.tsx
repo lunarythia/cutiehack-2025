@@ -155,7 +155,7 @@ export const CourseSchedule = ({ courseCode }: { courseCode: string }) => {
                   [meeting.meetingTime.monday, "M"],
                   [meeting.meetingTime.tuesday, "T"],
                   [meeting.meetingTime.wednesday, "W"],
-                  [meeting.meetingTime.thursday, "T"],
+                  [meeting.meetingTime.thursday, "R"],
                   [meeting.meetingTime.friday, "F"],
                 ].map(([isMeeting, letter]) => (
                   <div
