@@ -5,6 +5,7 @@
  - Choose from group
 */
 import { Course } from "../types/plan";
+import { getCourse } from "../dataUtils/data";
 type CourseRequirement = {
     courseCode: string
     course?: Course
@@ -160,11 +161,13 @@ let deja: Course[] = [
 function areEqual(c1: Course, c2: Course): boolean{
     return c1.code==c2.code;
 }
-function getCourse(code: string): Course{
+function getCourseOf(code: string): Course{
+    //TODOD
+    let t = getCourse(code);
     return {
         code: code,
-        name: "COMPUTER",
-        units: 3
+        name: t.courseTitle,
+        units: t.creditHourHigh
     }
 }
 // GO THROUGH THE ENTIRE REQUIREMENT AND FIND CORRESPONDING COURSES
@@ -174,14 +177,14 @@ function fillCourses(main: Requirement){
             fillCourses(t);
         }else if("courses" in t&&t.courses!=undefined){
             for(let c of t.courses){
-                c.course = getCourse(c.courseCode);
+                c.course = getCourseOf(c.courseCode);
             }
         }else if("breadthCategory" in t&&t.breadthCategory!=undefined){
             //TODO
         }else if("type" in t){
             //
         }else{
-            t.course = getCourse(t.courseCode);
+            t.course = getCourseOf(t.courseCode);
         }
     }
 }
@@ -210,9 +213,10 @@ function flagRequirements(requirements: Requirement, alreadyTaken: Course[]){
                 t.satisfied = true;
             }
         }else if("type" in t){
-            //
+            //should not happen
+            console.log("error");
         }else{
-            t.course = getCourse(t.courseCode);
+            t.satisfied = alreadyTaken.some(o=>areEqual(t.course!, o));
         }
     }
 }
@@ -221,6 +225,7 @@ function getRequirements(alreadyTaken: Course[], requirements: Requirement): Req
     flagRequirements(requirements, alreadyTaken);
     return newObj;
 }
+//TODO
 function getMajorRequirements(major: string){
     return test;
 }
