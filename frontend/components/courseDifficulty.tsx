@@ -37,12 +37,12 @@ export const CourseDifficultyComments = ({
 
   return (
     <div style={{margin: '10px'}}>
-      <h1 className="text-3xl">
-        REVIEWS FOR CLASS {courseCode}
+      <h1 className="text-3xl text-center">
+        Reviews for {courseCode}
       </h1>
       <div className="grid gap-4">
         {foundEntry.comments.map((comment) => (
-          <p key={comment}>{comment}</p>
+          <p key={comment} className="p-2 md:p-4 shadow-lg rounded-lg max-w-7xl mx-auto">{comment}</p>
         ))}
       </div>
     </div>
