@@ -2,6 +2,7 @@
 // AcademicPlan.jsx
 import type { Metadata } from "next";
 import React, { useState, useEffect } from "react";
+import { toast } from 'react-toastify';
 import { data } from "./pageScript";
 import type { Year, QuarterPlan, Course } from "@/app/types/plan.ts";
 import { CourseDifficulty } from "@/components/courseDifficulty";
@@ -125,16 +126,16 @@ const Page = () => {
 
   const handleSave = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(plan));
-    alert("Plan saved!");
+    toast.success("Plan saved!");
   };
 
   const handleLoad = () => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (saved) {
       setPlan(JSON.parse(saved));
-      alert("Plan loaded!");
+      toast.success("Plan loaded!");
     } else {
-      alert("No saved plan found.");
+      toast.error("No saved plan found.");
     }
   };
   return (
