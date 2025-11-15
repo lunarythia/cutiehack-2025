@@ -1,5 +1,6 @@
 "use client";
 import difficultyDatabase from "@/data/difficulty-database-fixed.json";
+import BackButton from "./BackButton";
 
 export type DifficultyEntries = Record<
   string,
@@ -37,6 +38,7 @@ export const CourseDifficultyComments = ({
 
   return (
     <div style={{margin: '10px'}}>
+      <BackButton/>
       <div className="flex flex-col items-center justify-center">
         <h1 className="text-3xl">
           Reviews for {courseCode}
