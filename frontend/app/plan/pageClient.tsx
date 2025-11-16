@@ -8,6 +8,7 @@ import { data } from "./pageScript";
 import type { Year, QuarterPlan, Course } from "@/app/types/plan.ts";
 import { CourseDifficulty } from "@/components/courseDifficulty";
 import { CourseSchedule } from "@/components/courseSchedule";
+import { firstAvailableCourse } from "@/lib/firstAvailableCourse";
 
 /*export const metadata: Metadata = {
   title: "Four-year plan",
@@ -22,13 +23,16 @@ const CourseCell = ({ code, name, notes }: Course) => {
     // Render an empty cell if no course code is provided
     return <td className="border border-gray-300 p-2 align-top">&nbsp;</td>;
   }
+
+  const firstAvail = firstAvailableCourse(code);
+
   return (
     <td className="border border-gray-300 p-2 align-top text-left">
-      <div className="font-semibold">{code}</div>
+      <div className="font-semibold">{firstAvail}</div>
       {name && <div className="text-sm">{name}</div>}
       {notes && <div className="text-xs italic text-gray-600">{notes}</div>}
-      {code && <CourseDifficulty courseCode={code} />}
-      {code && <CourseSchedule courseCode={code} />}
+      {firstAvail && <CourseDifficulty courseCode={firstAvail} />}
+      {firstAvail && <CourseSchedule courseCode={firstAvail} />}
     </td>
   );
 };

@@ -23,6 +23,11 @@ export const CourseDifficulty = ({
 
   if (!foundEntry) return <span />;
 
+  if (foundEntry.difficulty.startsWith("See ")) {
+    return (
+      <CourseDifficulty courseCode={foundEntry.difficulty.split("See ")[1]} />
+    );
+  }
   return (
     <div className="grid gap-1">
       {noLink ? (
@@ -45,6 +50,14 @@ export const CourseDifficultyComments = ({
   const foundEntry = (difficultyDatabase as DifficultyEntries)[fixedCode];
 
   if (!foundEntry) return <span />;
+
+  if (foundEntry.difficulty.startsWith("See ")) {
+    return (
+      <CourseDifficultyComments
+        courseCode={foundEntry.difficulty.split("See ")[1]}
+      />
+    );
+  }
 
   return (
     // <div style={{margin: '10px'}} >
