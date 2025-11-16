@@ -25,7 +25,7 @@ type Requirement = {
     choice?: number|number[]
     satisfied?: boolean
 }
-let test: Requirement = { // BREADTH
+const test: Requirement = { // BREADTH
     type: "all",
     requirements: [
         { // ENGLISH
@@ -155,7 +155,7 @@ let test: Requirement = { // BREADTH
     ]
 }
 // CLASSES ALREADY TAKEN
-let deja: Course[] = [
+const deja: Course[] = [
     //
 ];
 function areEqual(c1: Course, c2: Course): boolean{
@@ -163,7 +163,7 @@ function areEqual(c1: Course, c2: Course): boolean{
 }
 function getCourseOf(code: string): Course{
     //TODOD
-    let t = getCourse(code);
+    const t = getCourse(code);
     if(!t){
         return {
             code: code,
@@ -179,11 +179,11 @@ function getCourseOf(code: string): Course{
 }
 // GO THROUGH THE ENTIRE REQUIREMENT AND FIND CORRESPONDING COURSES
 function fillCourses(main: Requirement){
-    for(let t of main.requirements){
+    for(const t of main.requirements){
         if("requirements" in t){
             fillCourses(t);
         }else if("courses" in t&&t.courses!=undefined){
-            for(let c of t.courses){
+            for(const c of t.courses){
                 c.course = getCourseOf(c.courseCode);
             }
         }else if("breadthCategory" in t&&t.breadthCategory!=undefined){
@@ -197,11 +197,11 @@ function fillCourses(main: Requirement){
 }
 //FLAG SATISFIED REQUIREMENTS
 function flagRequirements(requirements: Requirement, alreadyTaken: Course[]){
-    for(let t of requirements.requirements){
+    for(const t of requirements.requirements){
         if("requirements" in t){
             let nc = 0;
             flagRequirements(t, alreadyTaken);
-            for(let f of requirements.requirements){
+            for(const f of requirements.requirements){
                 if(f.satisfied){
                     nc++;
                 }
@@ -211,7 +211,7 @@ function flagRequirements(requirements: Requirement, alreadyTaken: Course[]){
             }
         }else if("courses" in t&&t.courses!=undefined){
             let nc = 0;
-            for(let c of t.courses){
+            for(const c of t.courses){
                 if(alreadyTaken.some(o=>areEqual(c.course!, o))){
                     c.satisfied = true;
                     nc++;
@@ -229,7 +229,7 @@ function flagRequirements(requirements: Requirement, alreadyTaken: Course[]){
     }
 }
 function getRequirements(alreadyTaken: Course[], requirements: Requirement): Requirement{
-    let newObj = structuredClone(requirements);
+    const newObj = structuredClone(requirements);
     flagRequirements(newObj, alreadyTaken);
     return newObj;
 }
@@ -238,9 +238,9 @@ function getMajorRequirements(major: string){
     return test;
 }
 export function processRequirements(major: string, alreadyTaken: Course[]): Requirement{
-    let reqs = getMajorRequirements(major);
+    const reqs = getMajorRequirements(major);
     fillCourses(reqs);
-    let remaining = getRequirements(alreadyTaken, reqs);
+    const remaining = getRequirements(alreadyTaken, reqs);
     return remaining;
 }
 type ChoiceTree = {
@@ -249,7 +249,7 @@ type ChoiceTree = {
     list: (ChoiceTree|Course)[]
 }
 export function buildChoiceTree(reqs: Requirement|CoursesRequirement): ChoiceTree{
-    let tree: ChoiceTree = {
+    const tree: ChoiceTree = {
         type: reqs.type,
         list: []
     }
@@ -262,11 +262,11 @@ export function buildChoiceTree(reqs: Requirement|CoursesRequirement): ChoiceTre
         tree.num = parseInt(reqs.type);
     }
     if("courses" in reqs){
-        for(let f of reqs.courses!){
+        for(const f of reqs.courses!){
             if(!f.satisfied)tree.list.push(f.course!);
         }
     }else if("requirements" in reqs){
-        for(let f of reqs.requirements){
+        for(const f of reqs.requirements){
             if(!f.satisfied)if(!("type" in f)){
                 tree.list.push(f.course!);
             }else{

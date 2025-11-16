@@ -32,7 +32,7 @@ const CourseCell = ({ c, is}: {c:Course, is:boolean }) => {
             units: 0
         }
     }
-    let code = c.code, name = c.name, notes = c.notes;
+    const code = c.code, name = c.name, notes = c.notes;
   if (!code) {
     // Render an empty cell if no course code is provided
     return <td className={`border border-gray-300 ${(is?"bg-yellow-300":"bg-gray-300")} p-2 align-top`}>&nbsp;</td>;

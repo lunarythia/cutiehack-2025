@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import courses from "@/data/courses.json";
 
 export const firstAvailableCourse = (input: string) => {
@@ -8,7 +9,7 @@ export const firstAvailableCourse = (input: string) => {
 
     // find first available
     for (const c of codes) {
-      if ((courses as Record<string, never>)[c]) return prettyCode(c);
+      if (Object.keys(courses).includes(c)) return prettyCode(c);
     }
   }
 
@@ -17,7 +18,7 @@ export const firstAvailableCourse = (input: string) => {
 
     // find first available
     for (const c of codes) {
-      if ((courses as Record<string, never>)[c]) return prettyCode(c);
+      if (Object.keys(courses).includes(c)) return prettyCode(c);
     }
   }
 
