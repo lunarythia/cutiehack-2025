@@ -149,95 +149,123 @@ export const CourseSchedule = ({ courseCode }: { courseCode: string }) => {
   const lectureTypes = courseData.sections.map(
     (x) => x.meetingsFaculty[0].meetingTime.meetingType
   );
-  const beginningIndices = [
-    lectureTypes.indexOf("DIS"),
-    lectureTypes.indexOf("LAB"),
-    lectureTypes.indexOf("LEC"),
-  ];
+  const hasDis = lectureTypes.indexOf("DIS") !== -1;
+  const hasLab = lectureTypes.indexOf("LAB") !== -1;
+  const hasLec = lectureTypes.indexOf("LEC") !== -1;
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="mt-2 flex flex-row items-center gap-2 w-full bg-zinc-500/15 p-2 rounded-md">
-          Course Sections <CourseCounts course={courseData} />
+        <button className="mt-2 flex flex-row items-center gap-2 w-full bg-zinc-500/15 p-2 rounded-md group">
+          <div className="group-hover:underline">Course Sections</div>
+          <CourseCounts course={courseData} />
           <ChevronDown className="w-4 h-4" />
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" className="bg-zinc-200 w-96">
         <div className="grid gap-2">
           {/* days of the week */}
-          {courseData.sections?.length &&
-            courseData.sections.map((section, i) =>
-              section.meetingsFaculty.map((meeting) => (
-                <React.Fragment key={meeting.courseReferenceNumber}>
-                  {beginningIndices.includes(i) && (
-                    <SectionType meetingType={meeting.meetingTime.meetingType} />
-                  )}
-
-                  <div
-                    className={[
-                      "grid gap-1 border-l-2 pl-3",
-                      meeting.meetingTime.meetingType == "LEC" &&
-                        "border-l-blue-500",
-                      meeting.meetingTime.meetingType == "LAB" &&
-                        "border-l-green-500",
-                      meeting.meetingTime.meetingType == "DIS" &&
-                        "border-l-pink-500",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                  >
-                    {/* meeting days */}
-                    <div className="flex flex-row py-2">
-                      {[
-                        [meeting.meetingTime.monday, "M"],
-                        [meeting.meetingTime.tuesday, "T"],
-                        [meeting.meetingTime.wednesday, "W"],
-                        [meeting.meetingTime.thursday, "R"],
-                        [meeting.meetingTime.friday, "F"],
-                      ].map(([isMeeting, letter]) => (
-                        <div
-                          className={[
-                            "w-5 h-5 text-center flex items-center justify-center border border-blue-900",
-
-                            meeting.meetingTime.meetingType == "LEC" &&
-                              "border-blue-600",
-                            meeting.meetingTime.meetingType == "LAB" &&
-                              "border-green-600",
-                            meeting.meetingTime.meetingType == "DIS" &&
-                              "border-pink-600",
-                            isMeeting
-                              ? "bg-black text-white"
-                              : "bg-white text-black",
-                          ]
-                            .filter(Boolean)
-                            .join(" ")}
-                          key={letter as string}
-                        >
-                          {letter}
-                        </div>
-                      ))}
-
-                      <div className="ml-2">
-                        <CourseTime
-                          startTime={meeting.meetingTime.beginTime}
-                          endTime={meeting.meetingTime.endTime}
-                        />
-                      </div>
-                    </div>
-
-                    {/* time & instructor */}
-
-                    {section.faculty[0] && (
-                      <div>{section.faculty[0].displayName}</div>
-                    )}
-                  </div>
-                </React.Fragment>
-              ))
-            )}
+          {hasLec && (
+            <CourseSectionType course={courseData} meetingType="LEC" />
+          )}
+          {hasDis && (
+            <CourseSectionType course={courseData} meetingType="DIS" />
+          )}
+          {hasLab && (
+            <CourseSectionType course={courseData} meetingType="LAB" />
+          )}
         </div>
       </PopoverContent>
     </Popover>
+  );
+};
+
+const CourseSectionType = ({
+  course,
+  meetingType,
+}: {
+  course: CourseMetadata;
+  meetingType: "LAB" | "DIS" | "LEC";
+}) => {
+  return (
+    <>
+      <SectionType meetingType={meetingType} />
+      {course.sections
+        .filter(
+          (x) => x.meetingsFaculty[0].meetingTime.meetingType == meetingType
+        )
+        .map((section) => (
+          <CourseMeeting
+            section={section}
+            key={section.courseReferenceNumber}
+          />
+        ))}
+    </>
+  );
+};
+
+const CourseMeeting = ({
+  section,
+}: {
+  section: CourseMetadata["sections"][0];
+}) => {
+  const meeting = section.meetingsFaculty[0];
+
+  return (
+    <React.Fragment key={meeting.courseReferenceNumber}>
+      <div
+        className={[
+          "grid gap-1 border-l-2 pl-3",
+          meeting.meetingTime.meetingType == "LEC" && "border-l-blue-500",
+          meeting.meetingTime.meetingType == "LAB" && "border-l-green-500",
+          meeting.meetingTime.meetingType == "DIS" && "border-l-pink-500",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        {/* meeting days */}
+        <div className="flex flex-row py-2">
+          {[
+            [meeting.meetingTime.monday, "M"],
+            [meeting.meetingTime.tuesday, "T"],
+            [meeting.meetingTime.wednesday, "W"],
+            [meeting.meetingTime.thursday, "R"],
+            [meeting.meetingTime.friday, "F"],
+          ].map(([isMeeting, letter]) => (
+            <div
+              className={[
+                "w-5 h-5 text-center flex items-center justify-center border border-blue-900",
+
+                meeting.meetingTime.meetingType == "LEC" && "border-blue-600",
+                meeting.meetingTime.meetingType == "LAB" && "border-green-600",
+                meeting.meetingTime.meetingType == "DIS" && "border-pink-600",
+                isMeeting ? "bg-black text-white" : "bg-white text-black",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              key={letter as string}
+            >
+              {letter}
+            </div>
+          ))}
+
+          <div className="ml-2">
+            <CourseTime
+              startTime={meeting.meetingTime.beginTime}
+              endTime={meeting.meetingTime.endTime}
+            />
+          </div>
+        </div>
+
+        {/* time & instructor */}
+
+        {section.faculty[0] && (
+          <div className="flex flex-row gap-4">
+            {section.faculty[0].displayName}{" "}
+          </div>
+        )}
+      </div>
+    </React.Fragment>
   );
 };
 
@@ -300,7 +328,10 @@ const SectionType = ({ meetingType }: { meetingType: string }) => {
     LAB: ["LAB", "bg-green-500 text-white"],
   };
 
-  const [label, colorClass] = content[meetingType] || [meetingType, "bg-gray-500 text-white"];
+  const [label, colorClass] = content[meetingType] || [
+    meetingType,
+    "bg-gray-500 text-white",
+  ];
 
   return (
     <div className={`font-semibold px-3 py-1 rounded-md text-sm ${colorClass}`}>
