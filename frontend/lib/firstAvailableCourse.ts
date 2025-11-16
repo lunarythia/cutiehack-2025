@@ -22,11 +22,11 @@ export const firstAvailableCourse = (input: string) => {
   return input;
 };
 
-const prettyCode = (text: string): [string, string] => {
+const prettyCode = (text: string) => {
   const matchIndex = text.search(/\d/);
 
   if (matchIndex === -1) {
-    return [text, ""];
+    return text;
   }
 
   const before = text.substring(0, matchIndex);
