@@ -8,6 +8,7 @@ import type { Year, Course } from "@/app/types/plan.ts";
 import { CourseDifficulty } from "@/components/courseDifficulty";
 import { CourseSchedule } from "@/components/courseSchedule";
 import { firstAvailableCourse } from "@/lib/firstAvailableCourse";
+import { get } from "http";
 
 /*export const metadata: Metadata = {
   title: "Four-year plan",
@@ -155,13 +156,18 @@ const Page = () => {
       onClose: (response) => {
         switch (response) {
           case true:
-            const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-            if (saved) {
+            const plan = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (plan) {
               localStorage.removeItem(LOCAL_STORAGE_KEY);
               setPlan(data);
               toast.success("Plan reset!");
             } else {
               toast.error("No saved plan to reset.");
+            }
+            const major = localStorage.getItem("selectedMajor");
+            if (major) {
+              localStorage.removeItem("selectedMajor");
+              (document.getElementById("majorDropdown") as HTMLSelectElement).value = "Computer Science";
             }
             break;
           default:
@@ -200,7 +206,7 @@ const Page = () => {
           </button>
           <div className="w-2" />
           <p className="translate-y-1/4">Choose your major:</p>
-          <select onChange={handleChange} defaultValue="Computer Science" className="border border-gray-300 rounded px-2 py-1">
+          <select id="majorDropdown" onChange={handleChange} defaultValue={localStorage.getItem("selectedMajor") || "Computer Science"} className="border border-gray-300 rounded px-2 py-1">
             {bcoeMajors.map((major) => (
               <option key={major} value={major}>
                 {major}
