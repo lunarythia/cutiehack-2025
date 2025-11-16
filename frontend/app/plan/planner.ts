@@ -159,11 +159,21 @@ let deja: Course[] = [
     //
 ];
 function areEqual(c1: Course, c2: Course): boolean{
+    console.log(c1);
+    console.log(c2);
+    console.log(c1.code==c2.code);
     return c1.code==c2.code;
 }
 function getCourseOf(code: string): Course{
     //TODOD
     let t = getCourse(code);
+    if(!t){
+        return {
+            code: code,
+            name: code,
+            units: 0
+        };
+    }
     return {
         code: code,
         name: t.courseTitle,
@@ -206,6 +216,7 @@ function flagRequirements(requirements: Requirement, alreadyTaken: Course[]){
             for(let c of t.courses){
                 if(alreadyTaken.some(o=>areEqual(c.course!, o))){
                     c.satisfied = true;
+                    if(c.satisfied)console.log(c);
                     nc++;
                 }
             }
@@ -222,15 +233,16 @@ function flagRequirements(requirements: Requirement, alreadyTaken: Course[]){
 }
 function getRequirements(alreadyTaken: Course[], requirements: Requirement): Requirement{
     let newObj = structuredClone(requirements);
-    flagRequirements(requirements, alreadyTaken);
+    flagRequirements(newObj, alreadyTaken);
     return newObj;
 }
 //TODO
 function getMajorRequirements(major: string){
     return test;
 }
-function processRequirements(major: string, alreadyTaken: Course[]){
+export function processRequirements(major: string, alreadyTaken: Course[]): Requirement{
     let reqs = getMajorRequirements(major);
     fillCourses(reqs);
     let remaining = getRequirements(alreadyTaken, reqs);
+    return remaining;
 }
