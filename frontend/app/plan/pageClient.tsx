@@ -167,9 +167,7 @@ const AcademicPlan = ({ data, cursor }: Props) => {
                     />
                     <UnitCell
                       units={thing.courses[rowIndex]?.units}
-                      cursor={
-                        show(cursor, rowIndex) &&
-                        cursor.row === i &&
+                      cursor={                        cursor.row === i &&
                         cursor.col === colIndex
                       }
                     />
