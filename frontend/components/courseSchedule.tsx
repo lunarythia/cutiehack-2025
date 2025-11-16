@@ -149,6 +149,9 @@ export const isCourseOffered = (courseCode: string) => {
 export const CourseSchedule = ({ courseCode }: { courseCode: string }) => {
   const code = courseCode.replaceAll(" ", "");
 
+  // these kinds of courses aren't codes
+  if (code.includes("Elective") || code.includes("Breadth")) return <span />;
+
   const courseData: CourseMetadata | null = (
     courses as unknown as Record<string, CourseMetadata>
   )[code];
@@ -168,12 +171,10 @@ export const CourseSchedule = ({ courseCode }: { courseCode: string }) => {
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <button className="mt-2 flex flex-row items-center gap-2 w-full bg-zinc-500/15 p-2 rounded-md group">
-          <div className="group-hover:underline">Course Sections</div>
-          <CourseCounts course={courseData} />
-          <ChevronDown className="w-4 h-4" />
-        </button>
+      <PopoverTrigger className="mt-2 flex flex-row items-center gap-2 w-full bg-zinc-500/15 p-2 rounded-md group">
+        <div className="group-hover:underline">Course Sections</div>
+        <CourseCounts course={courseData} />
+        <ChevronDown className="w-4 h-4" />
       </PopoverTrigger>
       <PopoverContent align="start" className="bg-zinc-200 w-96">
         <div className="grid gap-2">

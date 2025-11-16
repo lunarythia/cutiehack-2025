@@ -1,13 +1,12 @@
 "use client";
 // AcademicPlan.jsx
-import type { Metadata } from "next";
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { ConfirmationCloseButton } from "@/components/ConfirmationCloseButton";
-import { data, bcoeMajors } from "./pageScript";
-import type { Year, QuarterPlan, Course } from "@/app/types/plan.ts";
+import { data } from "./pageScript";
+import type { Year, Course } from "@/app/types/plan.ts";
 import { CourseDifficulty } from "@/components/courseDifficulty";
-import { CourseSchedule, isCourseOffered } from "@/components/courseSchedule";
+import { CourseSchedule } from "@/components/courseSchedule";
 import { firstAvailableCourse } from "@/lib/firstAvailableCourse";
 
 /*export const metadata: Metadata = {
@@ -175,7 +174,7 @@ const Page = () => {
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     localStorage.setItem("selectedMajor", event.target.value);
     toast.success(`Selected major ${event.target.value}!`);
-  }
+  };
 
   return (
     <div className="p-4 md:p-8 bg-white shadow-lg rounded-lg max-w-7xl mx-auto font-sans">
@@ -201,7 +200,10 @@ const Page = () => {
           </button>
           <div className="w-2" />
           <p className="translate-y-1/4">Choose your major:</p>
-          <select onChange={handleChange} className="border border-gray-300 rounded px-2 py-1">
+          <select
+            onChange={handleChange}
+            className="border border-gray-300 rounded px-2 py-1"
+          >
             {bcoeMajors.map((major) => (
               <option key={major} value={major}>
                 {major}
