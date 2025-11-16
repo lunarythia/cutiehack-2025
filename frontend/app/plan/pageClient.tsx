@@ -35,7 +35,7 @@ const CourseCell = ({ c, is}: {c:Course, is:boolean }) => {
             units: 0
         }
     }
-    let code = c.code, name = c.name, notes = c.notes;
+    const code = c.code, name = c.name, notes = c.notes;
   if (!code) {
     // Render an empty cell if no course code is provided
     return <td className={`border border-gray-300 ${(is?"bg-yellow-200":"")} p-2 align-top`}>&nbsp;</td>;
@@ -211,6 +211,10 @@ const Page = () => {
     toast.success(`Selected major ${event.target.value}!`);
   };
 
+  const selectedMajor = (): string => {;
+    return localStorage.getItem("selectedMajor") ?? "Computer Science";
+  }
+
   let final = buildChoiceTree(processRequirements("", getCoursesBefore(cursor.row, cursor.col)));
 
   return (
@@ -240,7 +244,7 @@ const Page = () => {
 
           <div className="w-2" />
           <p className="translate-y-1/4">Choose your major:</p>
-          <select id="majorDropdown" onChange={handleChange} defaultValue={localStorage.getItem("selectedMajor") || "Computer Science"} className="border border-gray-300 rounded px-2 py-1">
+          <select id="majorDropdown" onChange={handleChange} defaultValue={selectedMajor()} className="border border-gray-300 rounded px-2 py-1">
             {bcoeMajors.map((major) => (
               <option key={major} value={major}>
                 {major}
