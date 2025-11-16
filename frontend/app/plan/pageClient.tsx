@@ -14,37 +14,49 @@ import { buildChoiceTree, ChoiceTree, processRequirements } from "./planner";
 /*export const metadata: Metadata = {
   title: "Four-year plan",
 };*/
-function stringify(tree: ChoiceTree): string{
-    let res = "";
-    if(tree.type==="number"){
-        res+="Choose "+tree.num+" of ";
-    }
-    return res;
+function show(un: { row: number; col: number }, deux: number) {
+  un.row = un.row;
+  console.log(un);
+  return un.row == deux;
 }
 
 /**
  * A sub-component to render a single course cell (<td>).
  * It handles the course code, name, and notes.
  */
-const CourseCell = ({ c, is}: {c:Course, is:boolean }) => {
-    if(!c){
-        c = {
-            code: "",
-            name: "",
-            notes: "",
-            units: 0
-        }
-    }
-    const code = c.code, name = c.name, notes = c.notes;
+const CourseCell = ({ c, is }: { c: Course; is: boolean }) => {
+  if (!c) {
+    c = {
+      code: "",
+      name: "",
+      notes: "",
+      units: 0,
+    };
+  }
+  const code = c.code,
+    name = c.name,
+    notes = c.notes;
   if (!code) {
     // Render an empty cell if no course code is provided
-    return <td className={`border border-gray-300 ${(is?"bg-yellow-200":"")} p-2 align-top`}>&nbsp;</td>;
+    return (
+      <td
+        className={`border border-gray-300 ${
+          is ? "bg-yellow-300" : "bg-gray-300"
+        } p-2 align-top`}
+      >
+        &nbsp;
+      </td>
+    );
   }
 
   const firstAvail = firstAvailableCourse(code);
 
   return (
-    <td className={`border border-gray-300 ${(is?"bg-yellow-200":"")} p-2 align-top text-left`}>
+    <td
+      className={`border border-gray-300 ${
+        is ? "bg-yellow-300" : "bg-gray-300"
+      } p-2 align-top text-left`}
+    >
       <div className="font-semibold">{firstAvail}</div>
       {name && <div className="text-sm">{name}</div>}
       {notes && <div className="text-xs italic text-gray-600">{notes}</div>}
@@ -58,9 +70,13 @@ const CourseCell = ({ c, is}: {c:Course, is:boolean }) => {
  * A sub-component to render a single unit cell (<td>).
  * It centers the text.
  */
-const UnitCell = ({ units, is }: { units?: number, is:boolean }) => {
+const UnitCell = ({ units, cursor }: { units?: number; cursor: boolean }) => {
   return (
-    <td className={`border border-gray-300 ${(is?"bg-yellow-200":"")} p-2 align-top text-center`}>
+    <td
+      className={`border border-gray-300 ${
+        cursor ? "bg-yellow-300" : "bg-gray-300"
+      } p-2 align-top text-center`}
+    >
       {/* Use optional chaining in case units is null/undefined */}
       {units ?? ""}
     </td>
@@ -72,14 +88,14 @@ const LOCAL_STORAGE_KEY = "coursePlan";
 type Props = {
   data: Year[];
   cursor: {
-    row: number,
-    col: number
-  }
+    row: number;
+    col: number;
+  };
 };
 /**
  * The main component that renders the entire academic plan table.
  */
-const AcademicPlan = ({ data, cursor}: Props) => {
+const AcademicPlan = ({ data, cursor }: Props) => {
   return (
     <table className="w-full border-collapse border border-gray-300">
       {/* Table Header */}
@@ -130,8 +146,18 @@ const AcademicPlan = ({ data, cursor}: Props) => {
               <tr key={rowIndex} className={`even:bg-gray-50`}>
                 {yearData.quarters.map((thing, colIndex) => (
                   <React.Fragment key={colIndex}>
-                    <CourseCell c={thing.courses[rowIndex]} is={cursor.row === i && cursor.col === colIndex} />
-                    <UnitCell units={thing.courses[rowIndex]?.units} is={cursor.row === i && cursor.col === colIndex} />
+                    <CourseCell
+                      c={thing.courses[rowIndex]}
+                      is={cursor.row === i && cursor.col === colIndex}
+                    />
+                    <UnitCell
+                      units={thing.courses[rowIndex]?.units}
+                      cursor={
+                        show(cursor, rowIndex) &&
+                        cursor.row === i &&
+                        cursor.col === colIndex
+                      }
+                    />
                   </React.Fragment>
                 ))}
               </tr>
@@ -144,6 +170,18 @@ const AcademicPlan = ({ data, cursor}: Props) => {
 };
 
 const Page = () => {
+  const [selectedMajor, setSelectedMajor] = useState<string>(() => {
+    try {
+      const saved =
+        typeof window !== "undefined"
+          ? localStorage.getItem("selectedMajor")
+          : null;
+      return saved ? saved : "Computer Science";
+    } catch {
+      return "Computer Science";
+    }
+  });
+
   const [plan, setPlan] = useState<Year[]>(() => {
     try {
       const saved =
@@ -157,12 +195,15 @@ const Page = () => {
   });
   const rowCheck = 2;
   const [cursor, setCursor] = useState({ row: 0, col: 0 });
-    const moveCursor = function(delta: number) {
-        setCursor(prev => ({
-            col: prev.col+delta<0?rowCheck:((prev.col + delta)%(rowCheck+1)), // 0–2 for 3 quarters
-            row: prev.row+(prev.col+delta<0?-1:(prev.col+delta>rowCheck?1:0))
-        }));
-    }
+  const moveCursor = function (delta: number) {
+    setCursor((prev) => ({
+      col:
+        prev.col + delta < 0 ? rowCheck : (prev.col + delta) % (rowCheck + 1), // 0–2 for 3 quarters
+      row:
+        prev.row +
+        (prev.col + delta < 0 ? -1 : prev.col + delta > rowCheck ? 1 : 0),
+    }));
+  };
 
   const handleSave = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(plan));
@@ -196,7 +237,10 @@ const Page = () => {
             const major = localStorage.getItem("selectedMajor");
             if (major) {
               localStorage.removeItem("selectedMajor");
-              (document.getElementById("majorDropdown") as HTMLSelectElement).value = "Computer Science";
+              setSelectedMajor("Computer Science");
+              (
+                document.getElementById("majorDropdown") as HTMLSelectElement
+              ).value = "Computer Science";
             }
             break;
           default:
@@ -208,14 +252,17 @@ const Page = () => {
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     localStorage.setItem("selectedMajor", event.target.value);
+    setSelectedMajor(event.target.value);
     toast.success(`Selected major ${event.target.value}!`);
   };
 
-  const selectedMajor = (): string => {;
-    return localStorage.getItem("selectedMajor") ?? "Computer Science";
-  }
+  // const selectedMajor = (): string => {;
+  //   return localStorage.getItem("selectedMajor") ?? "Computer Science";
+  // }
 
-  let final = buildChoiceTree(processRequirements("", getCoursesBefore(cursor.row, cursor.col)));
+  let final = buildChoiceTree(
+    processRequirements("", getCoursesBefore(cursor.row, cursor.col))
+  );
 
   return (
     <div className="p-4 md:p-8 bg-white shadow-lg rounded-lg max-w-7xl mx-auto font-sans">
@@ -240,11 +287,16 @@ const Page = () => {
             Reset Plan
           </button>
           <button onClick={() => moveCursor(-1)}>◀</button>
-        <button onClick={() => moveCursor(1)}>▶</button>
+          <button onClick={() => moveCursor(1)}>▶</button>
 
           <div className="w-2" />
           <p className="translate-y-1/4">Choose your major:</p>
-          <select id="majorDropdown" onChange={handleChange} defaultValue={selectedMajor()} className="border border-gray-300 rounded px-2 py-1">
+          <select
+            id="majorDropdown"
+            onChange={handleChange}
+            defaultValue={selectedMajor}
+            className="border border-gray-300 rounded px-2 py-1"
+          >
             {bcoeMajors.map((major) => (
               <option key={major} value={major}>
                 {major}
