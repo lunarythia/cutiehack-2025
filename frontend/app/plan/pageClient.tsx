@@ -19,7 +19,7 @@ function stringify(tree: ChoiceTree): string{
     if(tree.type==="number"){
         res+="Choose "+tree.num+" of ";
     }
-    for(var i = 0; i < tree.list.length; i++){
+    for(let i = 0; i < tree.list.length; i++){
         if("type" in tree.list[i]){
             res+="("+stringify(tree.list[i] as ChoiceTree)+")";
         }else{
@@ -56,7 +56,7 @@ const CourseCell = ({ c, is }: { c: Course; is: boolean }) => {
     return (
       <td
         className={`border border-gray-300 ${
-          is ? "bg-yellow-300" : "bg-gray-300"
+          is ? "bg-yellow-200" : ""
         } p-2 align-top`}
       >
         &nbsp;
@@ -69,7 +69,7 @@ const CourseCell = ({ c, is }: { c: Course; is: boolean }) => {
   return (
     <td
       className={`border border-gray-300 ${
-        is ? "bg-yellow-300" : "bg-gray-300"
+        is ? "bg-yellow-200" : ""
       } p-2 align-top text-left`}
     >
       <div className="font-semibold">{firstAvail}</div>
@@ -89,7 +89,7 @@ const UnitCell = ({ units, cursor }: { units?: number; cursor: boolean }) => {
   return (
     <td
       className={`border border-gray-300 ${
-        cursor ? "bg-yellow-300" : "bg-gray-300"
+        cursor ? "bg-yellow-200" : ""
       } p-2 align-top text-center`}
     >
       {/* Use optional chaining in case units is null/undefined */}
@@ -273,7 +273,7 @@ const Page = () => {
   //   return localStorage.getItem("selectedMajor") ?? "Computer Science";
   // }
 
-  let final = buildChoiceTree(
+  const final = buildChoiceTree(
     processRequirements("", getCoursesBefore(cursor.row, cursor.col))
   );
 
