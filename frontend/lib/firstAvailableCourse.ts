@@ -1,6 +1,8 @@
 import courses from "@/data/courses.json";
 
 export const firstAvailableCourse = (input: string) => {
+  input = input.replaceAll("*", "");
+
   if (input.includes(" or ")) {
     const codes = input.split(" or ").map((x) => x.replaceAll(" ", ""));
 
