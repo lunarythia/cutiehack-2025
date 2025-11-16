@@ -19,6 +19,19 @@ function stringify(tree: ChoiceTree): string{
     if(tree.type==="number"){
         res+="Choose "+tree.num+" of ";
     }
+    for(var i = 0; i < tree.list.length; i++){
+        if("type" in tree.list[i]){
+            res+="("+stringify(tree.list[i] as ChoiceTree)+")";
+        }else{
+            res+=(tree.list[i] as Course).code;
+        }
+        if(i!=tree.list.length-1){
+            res+=", ";
+            if(i==tree.list.length-2){
+                res+=(tree.type==="and"?"AND ":tree.type==="or"?"OR ":"");
+            }
+        }
+    }
     return res;
 }
 
