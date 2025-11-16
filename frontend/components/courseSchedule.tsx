@@ -169,6 +169,7 @@ export const CourseSchedule = ({ courseCode }: { courseCode: string }) => {
   const hasLab = lectureTypes.indexOf("LAB") !== -1;
   const hasLec = lectureTypes.indexOf("LEC") !== -1;
 
+  return (
     <Popover>
       <PopoverTrigger className="mt-2 flex flex-row items-center gap-2 w-full bg-zinc-500/15 p-2 rounded-md group">
         <div className="group-hover:underline">Course Sections</div>
