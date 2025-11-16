@@ -159,9 +159,6 @@ let deja: Course[] = [
     //
 ];
 function areEqual(c1: Course, c2: Course): boolean{
-    console.log(c1);
-    console.log(c2);
-    console.log(c1.code==c2.code);
     return c1.code==c2.code;
 }
 function getCourseOf(code: string): Course{
@@ -217,7 +214,6 @@ function flagRequirements(requirements: Requirement, alreadyTaken: Course[]){
             for(let c of t.courses){
                 if(alreadyTaken.some(o=>areEqual(c.course!, o))){
                     c.satisfied = true;
-                    if(c.satisfied)console.log(c);
                     nc++;
                 }
             }

@@ -13,21 +13,35 @@ import { firstAvailableCourse } from "@/lib/firstAvailableCourse";
 /*export const metadata: Metadata = {
   title: "Four-year plan",
 };*/
+function show(un: {row: number, col: number}, deux: number){
+    un.row = un.row;
+    console.log(un);
+    return un.row==deux;
+}
 
 /**
  * A sub-component to render a single course cell (<td>).
  * It handles the course code, name, and notes.
  */
-const CourseCell = ({ code, name, notes }: Course) => {
+const CourseCell = ({ c, is}: {c:Course, is:boolean }) => {
+    if(!c){
+        c = {
+            code: "",
+            name: "",
+            notes: "",
+            units: 0
+        }
+    }
+    let code = c.code, name = c.name, notes = c.notes;
   if (!code) {
     // Render an empty cell if no course code is provided
-    return <td className="border border-gray-300 p-2 align-top">&nbsp;</td>;
+    return <td className={`border border-gray-300 ${(is?"bg-yellow-300":"bg-gray-300")} p-2 align-top`}>&nbsp;</td>;
   }
 
   const firstAvail = firstAvailableCourse(code);
 
   return (
-    <td className="border border-gray-300 p-2 align-top text-left">
+    <td className={`border border-gray-300 ${(is?"bg-yellow-300":"bg-gray-300")} p-2 align-top text-left`}>
       <div className="font-semibold">{firstAvail}</div>
       {name && <div className="text-sm">{name}</div>}
       {notes && <div className="text-xs italic text-gray-600">{notes}</div>}
@@ -41,9 +55,9 @@ const CourseCell = ({ code, name, notes }: Course) => {
  * A sub-component to render a single unit cell (<td>).
  * It centers the text.
  */
-const UnitCell = ({ units }: { units?: number }) => {
+const UnitCell = ({ units, cursor }: { units?: number, cursor:boolean }) => {
   return (
-    <td className="border border-gray-300 p-2 align-top text-center">
+    <td className={`border border-gray-300 ${(cursor?"bg-yellow-300":"bg-gray-300")} p-2 align-top text-center`}>
       {/* Use optional chaining in case units is null/undefined */}
       {units ?? ""}
     </td>
@@ -54,11 +68,15 @@ const LOCAL_STORAGE_KEY = "coursePlan";
 
 type Props = {
   data: Year[];
+  cursor: {
+    row: number,
+    col: number
+  }
 };
 /**
  * The main component that renders the entire academic plan table.
  */
-const AcademicPlan = ({ data }: Props) => {
+const AcademicPlan = ({ data, cursor}: Props) => {
   return (
     <table className="w-full border-collapse border border-gray-300">
       {/* Table Header */}
@@ -87,7 +105,7 @@ const AcademicPlan = ({ data }: Props) => {
 
       {/* Table Body, mapping over the data */}
       <tbody>
-        {data.map((yearData) => (
+        {data.map((yearData, i) => (
           // Use React.Fragment to group elements for each year
           <React.Fragment key={yearData.year}>
             {/* Year Header Row */}
@@ -106,11 +124,11 @@ const AcademicPlan = ({ data }: Props) => {
                 ...yearData.quarters.map((cour) => cour.courses.length)
               ),
             }).map((_, rowIndex) => (
-              <tr key={rowIndex} className="even:bg-gray-50">
+              <tr key={rowIndex} className={`even:bg-gray-50`}>
                 {yearData.quarters.map((thing, colIndex) => (
                   <React.Fragment key={colIndex}>
-                    <CourseCell {...thing.courses[rowIndex]} />
-                    <UnitCell units={thing.courses[rowIndex]?.units} />
+                    <CourseCell c={thing.courses[rowIndex]} is={cursor.row === i && cursor.col === colIndex} />
+                    <UnitCell units={thing.courses[rowIndex]?.units} cursor={show(cursor, rowIndex)&&cursor.row === i && cursor.col === colIndex} />
                   </React.Fragment>
                 ))}
               </tr>
@@ -134,6 +152,14 @@ const Page = () => {
       return data;
     }
   });
+  const rowCheck = 2;
+  const [cursor, setCursor] = useState({ row: 0, col: 0 });
+    const moveCursor = function(delta: number) {
+        setCursor(prev => ({
+            col: prev.col+delta<0?rowCheck:((prev.col + delta)%(rowCheck+1)), // 0–2 for 3 quarters
+            row: prev.row+(prev.col+delta<0?-1:(prev.col+delta>rowCheck?1:0))
+        }));
+    }
 
   const handleSave = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(plan));
@@ -193,8 +219,11 @@ const Page = () => {
           >
             Reset Plan
           </button>
+          <button onClick={() => moveCursor(-1)}>◀</button>
+        <button onClick={() => moveCursor(1)}>▶</button>
+
         </div>
-        <AcademicPlan data={plan}></AcademicPlan>
+        <AcademicPlan data={plan} cursor={cursor}></AcademicPlan>
       </div>
     </div>
   );
