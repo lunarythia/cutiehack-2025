@@ -1,4 +1,19 @@
 import type { Year, QuarterPlan, Course } from "@/app/types/plan.ts";
+
+export const bcoeMajors: string[] = [
+  "Bioengineering",
+  "Chemical Engineering",
+  "Computer Engineering",
+  "Computer Science",
+  "Computer Science with Business Applications",
+  "Data Science",
+  "Environmental Engineering",
+  "Electrical Engineering",
+  "Materials Science and Engineering",
+  "Mechanical Engineering",
+  "Robotics Engineering"
+];
+
 export const data: Year[] = [
   {
     year: "FIRST YEAR",
