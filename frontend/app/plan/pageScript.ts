@@ -1,4 +1,5 @@
 import type { Year, QuarterPlan, Course } from "@/app/types/plan.ts";
+import { getCourse } from "../dataUtils/data";
 
 export const bcoeMajors: string[] = [
   "Bioengineering",
@@ -149,3 +150,21 @@ export const data: Year[] = [
   }
 ];
 //Save to local storage
+export function getCoursesBefore(r: number, c: number){
+  let f: Course[] = [];
+  let cursor = {r: 0, c: 0};
+  while(cursor.r!=r||cursor.c!=c){
+    for(let cu of data[cursor.r].quarters[cursor.c].courses){
+      f.push(cu);
+    }
+    cursor.c++;
+    if(cursor.c>2){
+      cursor.c = 0;
+      cursor.r++;
+    }else if(cursor.c<0){
+      cursor.c = 2;
+      cursor.r--;
+    }
+  }
+  return f;
+}

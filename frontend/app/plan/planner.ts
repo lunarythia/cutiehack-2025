@@ -243,7 +243,7 @@ export function processRequirements(major: string, alreadyTaken: Course[]): Requ
     let remaining = getRequirements(alreadyTaken, reqs);
     return remaining;
 }
-type ChoiceTree = {
+export type ChoiceTree = {
     type: string, // and, or, number, unitcombo
     num?: number,
     list: (ChoiceTree|Course)[]

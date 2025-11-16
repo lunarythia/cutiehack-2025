@@ -3,20 +3,23 @@
 import React, { ChangeEvent, useState } from "react";
 import { toast } from "react-toastify";
 import { ConfirmationCloseButton } from "@/components/ConfirmationCloseButton";
-import { data, bcoeMajors } from "./pageScript";
+import { data, bcoeMajors, getCoursesBefore } from "./pageScript";
 import type { Year, Course } from "@/app/types/plan.ts";
 import { CourseDifficulty } from "@/components/courseDifficulty";
 import { CourseSchedule } from "@/components/courseSchedule";
 import { firstAvailableCourse } from "@/lib/firstAvailableCourse";
 import { get } from "http";
+import { buildChoiceTree, ChoiceTree, processRequirements } from "./planner";
 
 /*export const metadata: Metadata = {
   title: "Four-year plan",
 };*/
-function show(un: {row: number, col: number}, deux: number){
-    un.row = un.row;
-    console.log(un);
-    return un.row==deux;
+function stringify(tree: ChoiceTree): string{
+    let res = "";
+    if(tree.type==="number"){
+        res+="Choose "+tree.num+" of ";
+    }
+    return res;
 }
 
 /**
@@ -35,13 +38,13 @@ const CourseCell = ({ c, is}: {c:Course, is:boolean }) => {
     let code = c.code, name = c.name, notes = c.notes;
   if (!code) {
     // Render an empty cell if no course code is provided
-    return <td className={`border border-gray-300 ${(is?"bg-yellow-300":"bg-gray-300")} p-2 align-top`}>&nbsp;</td>;
+    return <td className={`border border-gray-300 ${(is?"bg-yellow-200":"")} p-2 align-top`}>&nbsp;</td>;
   }
 
   const firstAvail = firstAvailableCourse(code);
 
   return (
-    <td className={`border border-gray-300 ${(is?"bg-yellow-300":"bg-gray-300")} p-2 align-top text-left`}>
+    <td className={`border border-gray-300 ${(is?"bg-yellow-200":"")} p-2 align-top text-left`}>
       <div className="font-semibold">{firstAvail}</div>
       {name && <div className="text-sm">{name}</div>}
       {notes && <div className="text-xs italic text-gray-600">{notes}</div>}
@@ -55,9 +58,9 @@ const CourseCell = ({ c, is}: {c:Course, is:boolean }) => {
  * A sub-component to render a single unit cell (<td>).
  * It centers the text.
  */
-const UnitCell = ({ units, cursor }: { units?: number, cursor:boolean }) => {
+const UnitCell = ({ units, is }: { units?: number, is:boolean }) => {
   return (
-    <td className={`border border-gray-300 ${(cursor?"bg-yellow-300":"bg-gray-300")} p-2 align-top text-center`}>
+    <td className={`border border-gray-300 ${(is?"bg-yellow-200":"")} p-2 align-top text-center`}>
       {/* Use optional chaining in case units is null/undefined */}
       {units ?? ""}
     </td>
@@ -128,7 +131,7 @@ const AcademicPlan = ({ data, cursor}: Props) => {
                 {yearData.quarters.map((thing, colIndex) => (
                   <React.Fragment key={colIndex}>
                     <CourseCell c={thing.courses[rowIndex]} is={cursor.row === i && cursor.col === colIndex} />
-                    <UnitCell units={thing.courses[rowIndex]?.units} cursor={show(cursor, rowIndex)&&cursor.row === i && cursor.col === colIndex} />
+                    <UnitCell units={thing.courses[rowIndex]?.units} is={cursor.row === i && cursor.col === colIndex} />
                   </React.Fragment>
                 ))}
               </tr>
@@ -208,6 +211,8 @@ const Page = () => {
     toast.success(`Selected major ${event.target.value}!`);
   };
 
+  let final = buildChoiceTree(processRequirements("", getCoursesBefore(cursor.row, cursor.col)));
+
   return (
     <div className="p-4 md:p-8 bg-white shadow-lg rounded-lg max-w-7xl mx-auto font-sans">
       <div>
@@ -245,6 +250,7 @@ const Page = () => {
         </div>
         <AcademicPlan data={plan} cursor={cursor}></AcademicPlan>
       </div>
+      <p>{stringify(final)}</p>
     </div>
   );
 };
