@@ -1,14 +1,14 @@
 "use client";
 // AcademicPlan.jsx
-import type { Metadata } from "next";
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { toast } from "react-toastify";
 import { ConfirmationCloseButton } from "@/components/ConfirmationCloseButton";
-import { data } from "./pageScript";
-import type { Year, QuarterPlan, Course } from "@/app/types/plan.ts";
+import { data, bcoeMajors } from "./pageScript";
+import type { Year, Course } from "@/app/types/plan.ts";
 import { CourseDifficulty } from "@/components/courseDifficulty";
-import { CourseSchedule, isCourseOffered } from "@/components/courseSchedule";
+import { CourseSchedule } from "@/components/courseSchedule";
 import { firstAvailableCourse } from "@/lib/firstAvailableCourse";
+import { get } from "http";
 
 /*export const metadata: Metadata = {
   title: "Four-year plan",
@@ -182,13 +182,18 @@ const Page = () => {
       onClose: (response) => {
         switch (response) {
           case true:
-            const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-            if (saved) {
+            const plan = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (plan) {
               localStorage.removeItem(LOCAL_STORAGE_KEY);
               setPlan(data);
               toast.success("Plan reset!");
             } else {
               toast.error("No saved plan to reset.");
+            }
+            const major = localStorage.getItem("selectedMajor");
+            if (major) {
+              localStorage.removeItem("selectedMajor");
+              (document.getElementById("majorDropdown") as HTMLSelectElement).value = "Computer Science";
             }
             break;
           default:
@@ -197,6 +202,12 @@ const Page = () => {
       },
     });
   };
+
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    localStorage.setItem("selectedMajor", event.target.value);
+    toast.success(`Selected major ${event.target.value}!`);
+  };
+
   return (
     <div className="p-4 md:p-8 bg-white shadow-lg rounded-lg max-w-7xl mx-auto font-sans">
       <div>
@@ -222,6 +233,15 @@ const Page = () => {
           <button onClick={() => moveCursor(-1)}>◀</button>
         <button onClick={() => moveCursor(1)}>▶</button>
 
+          <div className="w-2" />
+          <p className="translate-y-1/4">Choose your major:</p>
+          <select id="majorDropdown" onChange={handleChange} defaultValue={localStorage.getItem("selectedMajor") || "Computer Science"} className="border border-gray-300 rounded px-2 py-1">
+            {bcoeMajors.map((major) => (
+              <option key={major} value={major}>
+                {major}
+              </option>
+            ))}
+          </select>
         </div>
         <AcademicPlan data={plan} cursor={cursor}></AcademicPlan>
       </div>

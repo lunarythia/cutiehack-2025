@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/popover";
 import { ChevronDown } from "lucide-react";
 import React from "react";
+import Search from "./search";
 
 export interface CourseMetadata {
   id: number;
@@ -148,12 +149,17 @@ export const isCourseOffered = (courseCode: string) => {
 export const CourseSchedule = ({ courseCode }: { courseCode: string }) => {
   const code = courseCode.replaceAll(" ", "");
 
+  // these kinds of courses aren't codes
+  if (code.includes("Elective") || code.includes("Breadth")) return <span />;
+
   const courseData: CourseMetadata | null = (
     courses as unknown as Record<string, CourseMetadata>
   )[code];
 
   if (!courseData) {
-    return <span className="text-red-500 text-xs">Not offered this term</span>;
+    return (
+      <span className="text-red-500 text-xs">Not offered next quarter</span>
+    );
   }
 
   const lectureTypes = courseData.sections.map(
@@ -165,12 +171,10 @@ export const CourseSchedule = ({ courseCode }: { courseCode: string }) => {
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <button className="mt-2 flex flex-row items-center gap-2 w-full bg-zinc-500/15 p-2 rounded-md group">
-          <div className="group-hover:underline">Course Sections</div>
-          <CourseCounts course={courseData} />
-          <ChevronDown className="w-4 h-4" />
-        </button>
+      <PopoverTrigger className="mt-2 flex flex-row items-center gap-2 w-full bg-zinc-500/15 p-2 rounded-md group">
+        <div className="group-hover:underline">Course Sections</div>
+        <CourseCounts course={courseData} />
+        <ChevronDown className="w-4 h-4" />
       </PopoverTrigger>
       <PopoverContent align="start" className="bg-zinc-200 w-96">
         <div className="grid gap-2">
@@ -270,8 +274,9 @@ const CourseMeeting = ({
         {/* time & instructor */}
 
         {section.faculty[0] && (
-          <div className="flex flex-row gap-4">
-            {section.faculty[0].displayName}{" "}
+          <div className="flex flex-row items-center gap-2">
+            {section.faculty[0].displayName}
+            <Search query={section.faculty[0].displayName} />
           </div>
         )}
       </div>
