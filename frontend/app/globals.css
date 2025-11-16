@@ -123,4 +123,11 @@
     @apply underline;
     @apply text-blue-500;
   }
+  button {
+    @apply cursor-pointer;
+  }
+  button:disabled {
+    @apply cursor-not-allowed;
+    @apply opacity-50;
+  }
 }
