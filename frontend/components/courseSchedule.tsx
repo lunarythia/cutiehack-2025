@@ -135,6 +135,16 @@ export interface CourseSection {
   instructionalMethodDescription: string;
 }
 
+export const isCourseOffered = (courseCode: string) => {
+  const code = courseCode.replaceAll(" ", "");
+
+  const courseData: CourseMetadata | null = (
+    courses as unknown as Record<string, CourseMetadata>
+  )[code];
+
+  return !!courseData;
+};
+
 export const CourseSchedule = ({ courseCode }: { courseCode: string }) => {
   const code = courseCode.replaceAll(" ", "");
 

@@ -7,7 +7,7 @@ import { ConfirmationCloseButton } from "@/components/ConfirmationCloseButton";
 import { data } from "./pageScript";
 import type { Year, QuarterPlan, Course } from "@/app/types/plan.ts";
 import { CourseDifficulty } from "@/components/courseDifficulty";
-import { CourseSchedule } from "@/components/courseSchedule";
+import { CourseSchedule, isCourseOffered } from "@/components/courseSchedule";
 import { firstAvailableCourse } from "@/lib/firstAvailableCourse";
 
 /*export const metadata: Metadata = {
