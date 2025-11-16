@@ -198,6 +198,7 @@ function fillCourses(main: Requirement){
         }
     }
 }
+//FLAG SATISFIED REQUIREMENTS
 function flagRequirements(requirements: Requirement, alreadyTaken: Course[]){
     for(let t of requirements.requirements){
         if("requirements" in t){
@@ -245,4 +246,37 @@ export function processRequirements(major: string, alreadyTaken: Course[]): Requ
     fillCourses(reqs);
     let remaining = getRequirements(alreadyTaken, reqs);
     return remaining;
+}
+type ChoiceTree = {
+    type: string, // and, or, number, unitcombo
+    num?: number,
+    list: (ChoiceTree|Course)[]
+}
+export function buildChoiceTree(reqs: Requirement|CoursesRequirement): ChoiceTree{
+    let tree: ChoiceTree = {
+        type: reqs.type,
+        list: []
+    }
+    if(reqs.type==="1"){
+        tree.type = 'or';
+    }else if(reqs.type==="all"){
+        tree.type = "and";
+    }else{
+        tree.type = "number";
+        tree.num = parseInt(reqs.type);
+    }
+    if("courses" in reqs){
+        for(let f of reqs.courses!){
+            if(!f.satisfied)tree.list.push(f.course!);
+        }
+    }else if("requirements" in reqs){
+        for(let f of reqs.requirements){
+            if(!f.satisfied)if(!("type" in f)){
+                tree.list.push(f.course!);
+            }else{
+                tree.list.push(buildChoiceTree(f));
+            }
+        }
+    }
+    return tree;
 }

@@ -1,4 +1,4 @@
-import { processRequirements } from "../plan/planner";
+import { processRequirements, buildChoiceTree } from "../plan/planner";
 
 export default async function Page({
   params,
@@ -8,10 +8,10 @@ export default async function Page({
   const { courseCode } = await params;
 
   return <p>
-    {JSON.stringify(processRequirements("BCOE-CS", [{
+    {JSON.stringify(buildChoiceTree(processRequirements("BCOE-CS", [{
     name: "HELLO",
     code: "MATH 011",
     units: 4
-}]))}
+}])), null, '\t')}
   </p>;
 }
