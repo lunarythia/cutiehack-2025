@@ -208,6 +208,10 @@ const Page = () => {
     toast.success(`Selected major ${event.target.value}!`);
   };
 
+  const selectedMajor = (): string => {;
+    return localStorage.getItem("selectedMajor") ?? "Computer Science";
+  }
+
   return (
     <div className="p-4 md:p-8 bg-white shadow-lg rounded-lg max-w-7xl mx-auto font-sans">
       <div>
@@ -235,7 +239,7 @@ const Page = () => {
 
           <div className="w-2" />
           <p className="translate-y-1/4">Choose your major:</p>
-          <select id="majorDropdown" onChange={handleChange} defaultValue={localStorage.getItem("selectedMajor") || "Computer Science"} className="border border-gray-300 rounded px-2 py-1">
+          <select id="majorDropdown" onChange={handleChange} defaultValue={selectedMajor()} className="border border-gray-300 rounded px-2 py-1">
             {bcoeMajors.map((major) => (
               <option key={major} value={major}>
                 {major}
