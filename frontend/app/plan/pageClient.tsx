@@ -1,9 +1,9 @@
 "use client";
 // AcademicPlan.jsx
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { toast } from "react-toastify";
 import { ConfirmationCloseButton } from "@/components/ConfirmationCloseButton";
-import { data } from "./pageScript";
+import { data, bcoeMajors } from "./pageScript";
 import type { Year, Course } from "@/app/types/plan.ts";
 import { CourseDifficulty } from "@/components/courseDifficulty";
 import { CourseSchedule } from "@/components/courseSchedule";
@@ -200,10 +200,7 @@ const Page = () => {
           </button>
           <div className="w-2" />
           <p className="translate-y-1/4">Choose your major:</p>
-          <select
-            onChange={handleChange}
-            className="border border-gray-300 rounded px-2 py-1"
-          >
+          <select onChange={handleChange} defaultValue="Computer Science" className="border border-gray-300 rounded px-2 py-1">
             {bcoeMajors.map((major) => (
               <option key={major} value={major}>
                 {major}
