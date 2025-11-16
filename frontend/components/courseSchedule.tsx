@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/popover";
 import { ChevronDown } from "lucide-react";
 import React from "react";
+import Search from "./search";
 
 export interface CourseMetadata {
   id: number;
@@ -153,7 +154,9 @@ export const CourseSchedule = ({ courseCode }: { courseCode: string }) => {
   )[code];
 
   if (!courseData) {
-    return <span className="text-red-500 text-xs">Not offered this term</span>;
+    return (
+      <span className="text-red-500 text-xs">Not offered next quarter</span>
+    );
   }
 
   const lectureTypes = courseData.sections.map(
@@ -270,8 +273,9 @@ const CourseMeeting = ({
         {/* time & instructor */}
 
         {section.faculty[0] && (
-          <div className="flex flex-row gap-4">
-            {section.faculty[0].displayName}{" "}
+          <div className="flex flex-row items-center gap-2">
+            {section.faculty[0].displayName}
+            <Search query={section.faculty[0].displayName} />
           </div>
         )}
       </div>

@@ -22,21 +22,24 @@ export const CourseDifficulty = ({
   const foundEntry = (difficultyDatabase as DifficultyEntries)[fixedCode];
 
   if (!foundEntry) return <span />;
-
   if (foundEntry.difficulty.startsWith("See ")) {
     return (
       <CourseDifficulty courseCode={foundEntry.difficulty.split("See ")[1]} />
     );
   }
+
+  const color = getColor(foundEntry.difficulty);
+
   return (
-    <div className="grid gap-1">
+    <div className="flex flex-row items-center gap-2">
       {noLink ? (
         `Difficulty: ${foundEntry.difficulty} / 10.0`
       ) : (
-        <a className="text-blue-500" href={`/reviews/${fixedCode}`}>
+        <a className="" href={`/reviews/${fixedCode}`}>
           Difficulty: {foundEntry.difficulty} / 10.0
         </a>
       )}
+      <div className={`w-3 h-3 rounded-full ${color}`} />
     </div>
   );
 };
@@ -85,4 +88,14 @@ export const CourseDifficultyComments = ({
       </div>
     </div>
   );
+};
+
+const getColor = (difficulty: string) => {
+  const n = parseInt(difficulty);
+
+  if (n <= 2) return "bg-green-300";
+  if (n <= 6) return "bg-green-700";
+  if (n <= 7) return "bg-yellow-500";
+  if (n <= 9) return "bg-amber-700";
+  return "bg-red-500 bg-red-500"; //
 };
